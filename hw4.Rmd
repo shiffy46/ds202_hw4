@@ -1,12 +1,6 @@
 ---
 title: 'Homework #4'
-author: "Your Name"
-date: "3/1/2018"
-output: html_document
----
----
-title: 'Homework #4'
-author: "Your Name"
+author: "Sam Shifflett"
 date: "3/1/2018"
 output: html_document
 ---
