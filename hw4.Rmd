@@ -28,7 +28,7 @@ library(dplyr)
 1.)
 Get a frequency breakdown of the number of chicks, their average weight and the standard deviation of the weights in each of the diets at the start of the study. Store the resulting data frame in a variable named `weight0` and print.
 ```{r}
-weight0 <- ChickWeight %>%
+weight0 <- filter(ChickWeight, Time == 0) %>%
   group_by(Diet) %>%
   summarise (n = n(), mean = mean(weight), sd = sd(weight)) %>%
   mutate(freq = n / sum(n), mean = mean, std = sd)
