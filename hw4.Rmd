@@ -27,15 +27,8 @@ For all of the questions use `dplyr` functions with the pipe `%>%` whenever poss
 
 ```{r}
 install.packages("dplyr")
-
 library(datasets)
 library(dplyr)
-
-
-#3
-dat <- ChickWeight %>%
-  group_by(Chick) %>%
-  mutate(weight0 = weight[Time == 0])
 ```
 
 1.)
@@ -64,18 +57,18 @@ head(complete,3)
 3.)
 In the complete data set introduce a new variable that measures the current weight difference compared to day 0. Name this variable  weightgain and print the first 3 rows of the new data frame.
 ```{r}
-weightgain <- ChickWeight %>%
+ChickWeight <- ChickWeight %>%
   group_by(Chick) %>%
   mutate(weightgain = weight - weight[Time == 0])
-head(weightgain,3)
+head(ChickWeight,3)
 ```
 
 4.)
 Use `{ggplot2}` to create side-by-side boxplots of `weightgain` by `Diet` for day 21. Describe the relationship in 2-3 sentences. Change the order of the categories in the Diet variable such that the boxplots are ordered by median `weightgain`, and the lower limit of the y axis should be 0.
 ```{r}
 library("ggplot2")
-data1 <- dplyr::filter(weightgain, Time == 21)
-ggplot(data1, aes(x=reorder(Diet,weightgain,FUN=median), y=weightgain)) + geom_boxplot() + xlab("Diets")
+data1 <- dplyr::filter(ChickWeight, Time == 21)
+ggplot(data1, aes(x=reorder(Diet,weightgain,FUN=median), y=weightgain)) + geom_boxplot() + xlab("Diets") + expand_limits(y=0)
 ```
 
 This graph shows that diet 3 is the best one for weight gain in the chicks with the largest median value. This also shows that the most consistent weight gain diet would be 4 since there isn't a large distribution of weightgain values. 
@@ -96,7 +89,7 @@ For the chicks with the least and the most weight at time 0, plot their growth t
 ```{r}
 data2 <- dplyr::filter(ChickWeight, Time == 0)
 df <- bind_rows(data2[which.max(data2$weight),],data2[which.min(data2$weight),])
-chickdata <- filter(weightgain, Chick == 39 | Chick == 43)
+chickdata <- filter(ChickWeight, Chick == 39 | Chick == 43)
 plot <- ggplot(chickdata, aes(x=Time,y=weight, color=Chick)) + geom_line()
 plot
 ```
@@ -110,5 +103,28 @@ test <- ChickWeight %>%
 plot2 <- ggplot(test, aes(x=Time,y=meanweight)) + geom_line()
 plot2
 ```
+
+7.)
+What else do you find interesting in the dataset? Show your exploratory analysis.
+```{r}
+ggplot(ChickWeight, aes(x=Diet)) + geom_histogram(stat="count")
+```
+
+Seems like they have more chicks on Diet 1 than any other.
+
+```{r}
+totalWeightGain <- ChickWeight %>%
+  group_by(Diet) %>%
+  summarise(totalweightgain = sum(weightgain))
+totalWeightGain
+```
+
+We can discard the totalweightgain for Diet 1 because they are more instances of Diet 1 than others. But there is more total weight gain for diet 3 than any other.
+
+```{r}
+ggplot(ChickWeight, aes(x=Time,y=weight,color=Diet,shape=Diet,size=Diet)) + geom_point()
+```
+
+Seems as if the overall weight for Diet 3 seems to be taking over the largest weigth gain.
 
 
